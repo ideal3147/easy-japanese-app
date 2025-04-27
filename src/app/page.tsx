@@ -6,18 +6,26 @@ import InputArea from "@/components/InputArea";
 import ConvertButton from "@/components/ConvertButton";
 import OutputArea from "@/components/OutputArea";
 import Footer from "@/components/Footer";
+import { initKuroshiro, convertToHiragana } from "@/libs/kuroshiroClient";
 
 export default function Home() {
   const [text, setText] = useState("");
   const [convertedText, setConvertedText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleConvert = () => {
-    // 仮の変換処理（本物はあとで作る）
-    const simpleText = text.replace(/[一-龠々〆ヵヶ]/g, (kanji) => {
-      // とりあえず「〇」に置き換える（仮）
-      return "〇";
-    });
-    setConvertedText(simpleText);
+  const handleConvert = async () => {
+    if (!text) return;
+
+    setIsLoading(true);
+    try {
+      await initKuroshiro();
+      const result = await convertToHiragana(text);
+      setConvertedText(result);
+    } catch (error) {
+      console.error("変換エラー", error);
+      setConvertedText("へんかんできなかったよ…😢");
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -26,7 +34,11 @@ export default function Home() {
       <div className="w-full max-w-2xl">
         <InputArea text={text} setText={setText} />
         <ConvertButton onClick={handleConvert} />
-        <OutputArea convertedText={convertedText} />
+        {isLoading ? (
+          <div className="mt-4 text-center text-lg">へんかんちゅう...</div>
+        ) : (
+          <OutputArea convertedText={convertedText} />
+        )}
       </div>
       <Footer />
     </main>
