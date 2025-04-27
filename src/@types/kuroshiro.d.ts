@@ -1,7 +1,7 @@
 declare module "kuroshiro" {
     export interface AnalyzerInterface {
       init(): Promise<void>;
-      tokenize(text: string): Promise<any>;
+      tokenize(text: string): Promise<string[]>;
     }
   
     export default class Kuroshiro {

@@ -8,6 +8,6 @@ declare module "kuroshiro-analyzer-kuromoji" {
   export default class KuromojiAnalyzer implements AnalyzerInterface {
     constructor(options?: KuromojiAnalyzerOptions);
     init(): Promise<void>;
-    tokenize(text: string): Promise<any>;
+    tokenize(text: string): Promise<string[]>;
   }
 }
