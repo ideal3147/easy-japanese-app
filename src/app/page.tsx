@@ -6,7 +6,7 @@ import InputArea from "@/components/InputArea";
 import ConvertButton from "@/components/ConvertButton";
 import OutputArea from "@/components/OutputArea";
 import Footer from "@/components/Footer";
-import { initKuroshiro, convertToHiragana } from "@/libs/kuroshiroClient";
+import { convertToEasyJapanese } from "@/libs/openaiClient";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -18,8 +18,7 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      await initKuroshiro();
-      const result = await convertToHiragana(text);
+      const result = await convertToEasyJapanese(text);
       setConvertedText(result);
     } catch (error) {
       console.error("変換エラー", error);
