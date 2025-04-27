@@ -29,15 +29,23 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center min-h-screen p-8">
+    <main className="flex flex-col items-center min-h-screen bg-gradient-to-b from-indigo-50 to-white p-4 md:p-8">
       <Header />
-      <div className="w-full max-w-2xl">
-        <InputArea text={text} setText={setText} />
-        <ConvertButton onClick={handleConvert} />
+      <div className="w-full max-w-2xl space-y-6 mt-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl">
+          <InputArea text={text} setText={setText} />
+        </div>
+        <div className="flex justify-center">
+          <ConvertButton onClick={handleConvert} />
+        </div>
         {isLoading ? (
-          <div className="mt-4 text-center text-lg">へんかんちゅう...</div>
+          <div className="mt-4 text-center text-lg text-indigo-600 animate-pulse">
+            へんかんちゅう...
+          </div>
         ) : (
-          <OutputArea convertedText={convertedText} />
+          <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl">
+            <OutputArea convertedText={convertedText} />
+          </div>
         )}
       </div>
       <Footer />
