@@ -1,14 +1,36 @@
+import CopyButton from "@/components/CopyButton";
+
 type OutputAreaProps = {
-    convertedText: string;
-  };
-  
-  const OutputArea = ({ convertedText }: OutputAreaProps) => {
-    return (
-      <div className="w-full p-4 mt-4 border rounded-lg min-h-[150px] text-lg bg-gray-50">
-        {convertedText ? convertedText : "ここにけっかがでるよ！"}
+  convertedText: string;
+};
+
+const OutputArea = ({ convertedText }: OutputAreaProps) => {
+  return (
+    <div className="relative w-full space-y-2">
+      <label htmlFor="output-text" className="block text-sm font-medium text-gray-700">
+        ひらがなにへんかんしたぶんしょう
+      </label>
+      <div className="relative">
+        <div
+          id="output-text"
+          className="p-4 border-2 border-indigo-100 rounded-xl min-h-[150px] text-lg 
+                   bg-indigo-50/50 transition-all duration-200 ease-in-out"
+        >
+          {convertedText ? (
+            <span className="text-indigo-900">{convertedText}</span>
+          ) : (
+            <span className="text-gray-400">ここにけっかがでるよ！</span>
+          )}
+        </div>
+
+        {convertedText && (
+          <div className="absolute right-2 bottom-2">
+            <CopyButton textToCopy={convertedText} />
+          </div>
+        )}
       </div>
-    );
-  };
-  
-  export default OutputArea;
-  
+    </div>
+  );
+};
+
+export default OutputArea;

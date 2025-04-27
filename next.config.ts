@@ -1,8 +1,8 @@
-// next.config.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  webpackDevMiddleware: config => {
+  webpackDevMiddleware: (config: any) => {
     config.watchOptions = {
       poll: 1000, // ← 1秒ごとに変更検知する
       aggregateTimeout: 300,
