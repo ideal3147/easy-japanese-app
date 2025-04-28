@@ -1,12 +1,14 @@
 import { useSettings } from '@/contexts/SettingsContext';
 
-const SettingsPanel = () => {
+interface SettingsPanelProps {
+  onClose: () => void;
+}
+
+const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
   const { japaneseLevel, setJapaneseLevel } = useSettings();
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 space-y-4">
-      <h2 className="text-lg font-semibold text-gray-800">せってい</h2>
-      
+    <div className="space-y-4">
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           にほんごのレベル
@@ -57,6 +59,14 @@ const SettingsPanel = () => {
             </label>
           </div>
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        >
+          とじる
+        </button>
       </div>
     </div>
   );
