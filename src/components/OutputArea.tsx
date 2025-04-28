@@ -14,7 +14,7 @@ const OutputArea = ({ convertedText }: OutputAreaProps) => {
         <div
           id="output-text"
           className="p-4 border-2 border-indigo-100 rounded-xl min-h-[150px] text-lg 
-                   bg-indigo-50/50 transition-all duration-200 ease-in-out"
+                   bg-indigo-50/50 transition-all duration-200 ease-in-out whitespace-pre-wrap"
         >
           {convertedText ? (
             <span className="text-indigo-900">{convertedText}</span>
