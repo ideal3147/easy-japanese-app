@@ -5,10 +5,15 @@ interface SettingsPanelProps {
 }
 
 const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
-  const { japaneseLevel, setJapaneseLevel } = useSettings();
+  const { 
+    japaneseLevel, 
+    setJapaneseLevel,
+    openAIModel,
+    setOpenAIModel
+  } = useSettings();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-700">
           にほんごのレベル
@@ -60,6 +65,59 @@ const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
           </div>
         </div>
       </div>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          AIモデル
+        </label>
+        <div className="space-y-2">
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="gpt-4.1"
+              name="openAIModel"
+              value="gpt-4.1"
+              checked={openAIModel === 'gpt-4.1'}
+              onChange={() => setOpenAIModel('gpt-4.1')}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label htmlFor="gpt-4.1" className="ml-2 text-sm text-gray-700">
+              GPT-4.1（高精度・高価）
+            </label>
+          </div>
+          
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="gpt-4.1-mini"
+              name="openAIModel"
+              value="gpt-4.1-mini"
+              checked={openAIModel === 'gpt-4.1-mini'}
+              onChange={() => setOpenAIModel('gpt-4.1-mini')}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label htmlFor="gpt-4.1-mini" className="ml-2 text-sm text-gray-700">
+              GPT-4.1 Mini（標準）
+            </label>
+          </div>
+          
+          <div className="flex items-center">
+            <input
+              type="radio"
+              id="gpt-4.1-nano"
+              name="openAIModel"
+              value="gpt-4.1-nano"
+              checked={openAIModel === 'gpt-4.1-nano'}
+              onChange={() => setOpenAIModel('gpt-4.1-nano')}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label htmlFor="gpt-4.1-nano" className="ml-2 text-sm text-gray-700">
+              GPT-4.1 Nano（低精度・安価）
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-end">
         <button
           onClick={onClose}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { JapaneseLevel } from '@/contexts/SettingsContext';
+import { JapaneseLevel, OpenAIModel } from '@/contexts/SettingsContext';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -50,7 +50,7 @@ const getLevelSpecificPrompt = (level: JapaneseLevel) => {
 
 export async function POST(request: Request) {
   try {
-    const { text, level } = await request.json();
+    const { text, level, model } = await request.json();
 
     const prompt = `
     ${getLevelSpecificPrompt(level as JapaneseLevel)}
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "gpt-4.1-nano",
+      model: model as OpenAIModel,
       temperature: 0.7,
     });
 

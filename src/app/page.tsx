@@ -13,14 +13,14 @@ function HomeContent() {
   const [text, setText] = useState("");
   const [convertedText, setConvertedText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { japaneseLevel } = useSettings();
+  const { japaneseLevel, openAIModel } = useSettings();
 
   const handleConvert = async () => {
     if (!text) return;
 
     setIsLoading(true);
     try {
-      const result = await convertToEasyJapanese(text, japaneseLevel);
+      const result = await convertToEasyJapanese(text, japaneseLevel, openAIModel);
       setConvertedText(result);
     } catch (error) {
       console.error("変換エラー", error);
