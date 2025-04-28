@@ -1,11 +1,17 @@
-export const convertToEasyJapanese = async (text: string): Promise<string> => {
+import { JapaneseLevel, OpenAIModel } from '@/contexts/SettingsContext';
+
+export const convertToEasyJapanese = async (
+  text: string, 
+  level: JapaneseLevel,
+  model: OpenAIModel
+): Promise<string> => {
   try {
     const response = await fetch('/api/convert', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text, level, model }),
     });
 
     if (!response.ok) {

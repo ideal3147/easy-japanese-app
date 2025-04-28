@@ -7,18 +7,20 @@ import ConvertButton from "@/components/ConvertButton";
 import OutputArea from "@/components/OutputArea";
 import Footer from "@/components/Footer";
 import { convertToEasyJapanese } from "@/libs/openaiClient";
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 
-export default function Home() {
+function HomeContent() {
   const [text, setText] = useState("");
   const [convertedText, setConvertedText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { japaneseLevel, openAIModel } = useSettings();
 
   const handleConvert = async () => {
     if (!text) return;
 
     setIsLoading(true);
     try {
-      const result = await convertToEasyJapanese(text);
+      const result = await convertToEasyJapanese(text, japaneseLevel, openAIModel);
       setConvertedText(result);
     } catch (error) {
       console.error("変換エラー", error);
@@ -49,5 +51,13 @@ export default function Home() {
       </div>
       <Footer />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <SettingsProvider>
+      <HomeContent />
+    </SettingsProvider>
   );
 }
