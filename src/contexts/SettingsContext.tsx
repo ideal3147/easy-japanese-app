@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 export type JapaneseLevel = 'elementary' | 'intermediate' | 'advanced';
 export type OpenAIModel = 'gpt-4.1' | 'gpt-4.1-mini' | 'gpt-4.1-nano';
@@ -25,15 +25,33 @@ interface SettingsProviderProps {
 }
 
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const [japaneseLevel, setJapaneseLevel] = useState<JapaneseLevel>('elementary');
-  const [openAIModel, setOpenAIModel] = useState<OpenAIModel>('gpt-4.1-nano');
+  const [japaneseLevel, setJapaneseLevel] = useState<JapaneseLevel>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('japaneseLevel') as JapaneseLevel) || 'elementary';
+    }
+    return 'elementary';
+  });
+
+  const [openAIModel, setOpenAIModel] = useState<OpenAIModel>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('openAIModel') as OpenAIModel) || 'gpt-4.1-nano';
+    }
+    return 'gpt-4.1-nano';
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('japaneseLevel', japaneseLevel);
+      localStorage.setItem('openAIModel', openAIModel);
+    }
+  }, [japaneseLevel, openAIModel]);
 
   return (
-    <SettingsContext.Provider value={{ 
-      japaneseLevel, 
+    <SettingsContext.Provider value={{
+      japaneseLevel,
       setJapaneseLevel,
       openAIModel,
-      setOpenAIModel
+      setOpenAIModel,
     }}>
       {children}
     </SettingsContext.Provider>
