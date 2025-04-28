@@ -7,9 +7,14 @@ type OutputAreaProps = {
 const OutputArea = ({ convertedText }: OutputAreaProps) => {
   return (
     <div className="relative w-full space-y-2">
-      <label htmlFor="output-text" className="block text-sm font-medium text-gray-700">
-        ひらがなにへんかんしたぶんしょう
-      </label>
+      <div className="flex justify-between items-center">
+        <label htmlFor="output-text" className="block text-sm font-medium text-gray-700">
+          ひらがなにへんかんしたぶんしょう
+        </label>
+        {convertedText && (
+          <CopyButton textToCopy={convertedText} />
+        )}
+      </div>
       <div className="relative">
         <div
           id="output-text"
@@ -22,12 +27,6 @@ const OutputArea = ({ convertedText }: OutputAreaProps) => {
             <span className="text-gray-400">ここにけっかがでるよ！</span>
           )}
         </div>
-
-        {convertedText && (
-          <div className="absolute right-2 bottom-2">
-            <CopyButton textToCopy={convertedText} />
-          </div>
-        )}
       </div>
     </div>
   );
