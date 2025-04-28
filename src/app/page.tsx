@@ -6,19 +6,22 @@ import InputArea from "@/components/InputArea";
 import ConvertButton from "@/components/ConvertButton";
 import OutputArea from "@/components/OutputArea";
 import Footer from "@/components/Footer";
+import SettingsPanel from "@/components/SettingsPanel";
 import { convertToEasyJapanese } from "@/libs/openaiClient";
+import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
 
-export default function Home() {
+function HomeContent() {
   const [text, setText] = useState("");
   const [convertedText, setConvertedText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { japaneseLevel } = useSettings();
 
   const handleConvert = async () => {
     if (!text) return;
 
     setIsLoading(true);
     try {
-      const result = await convertToEasyJapanese(text);
+      const result = await convertToEasyJapanese(text, japaneseLevel);
       setConvertedText(result);
     } catch (error) {
       console.error("変換エラー", error);
@@ -31,6 +34,7 @@ export default function Home() {
     <main className="flex flex-col items-center min-h-screen bg-gradient-to-b from-indigo-50 to-white p-4 md:p-8">
       <Header />
       <div className="w-full max-w-2xl space-y-6 mt-8">
+        <SettingsPanel />
         <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl">
           <InputArea text={text} setText={setText} />
         </div>
@@ -49,5 +53,13 @@ export default function Home() {
       </div>
       <Footer />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <SettingsProvider>
+      <HomeContent />
+    </SettingsProvider>
   );
 }
