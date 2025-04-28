@@ -9,7 +9,7 @@ const OutputArea = ({ convertedText }: OutputAreaProps) => {
     <div className="relative w-full space-y-2">
       <div className="flex justify-between items-center">
         <label htmlFor="output-text" className="block text-sm font-medium text-gray-700">
-          ひらがなにへんかんしたぶんしょう
+          わかりやすくしたぶんしょう
         </label>
         {convertedText && (
           <CopyButton textToCopy={convertedText} />

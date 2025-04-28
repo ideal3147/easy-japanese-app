@@ -11,7 +11,7 @@ type ConvertButtonProps = {
                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         onClick={onClick}
       >
-        やさしい日本語にする！
+        かんたんな日本語にする！
       </button>
     );
   };
