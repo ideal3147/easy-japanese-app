@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
     "easy-japanese-app": "file:",
     "kuromoji": "^0.1.2",
     "kuroshiro": "^1.2.0",
