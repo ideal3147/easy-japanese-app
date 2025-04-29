@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login/callback`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_REDIRECT_URL}/login/callback`,
           data: {
             pendingApiKey: apiKey,
           }
