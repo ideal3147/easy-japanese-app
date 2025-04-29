@@ -76,7 +76,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return { error: null };
     } catch (error) {
-      localStorage.removeItem('pendingApiKey');
       return { error: error as AuthError };
     }
   };
