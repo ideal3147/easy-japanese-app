@@ -74,6 +74,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) throw error;
 
+      window.location.href = '/login/check-email';
+
       return { error: null };
     } catch (error) {
       return { error: error as AuthError };
