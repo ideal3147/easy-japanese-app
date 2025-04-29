@@ -46,28 +46,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const user = session?.user ?? null;
       setUser(user);
       setLoading(false);
-
-      if (user) {
-        // user_settingsにAPIキーが未登録なら追加
-        const { data: existingData } = await supabase
-          .from('user_settings')
-          .select('api_key')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!existingData) {
-          const pendingApiKey = localStorage.getItem('pendingApiKey');
-          if (pendingApiKey) {
-            await supabase.from('user_settings').insert([
-              {
-                user_id: user.id,
-                api_key: encryptApiKey(pendingApiKey, process.env.NEXT_PUBLIC_API_KEY_SECRET!),
-              },
-            ]);
-            localStorage.removeItem('pendingApiKey');
-          }
-        }
-      }
     };
 
     checkSession();
