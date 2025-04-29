@@ -96,6 +96,16 @@ const LoginForm = () => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
+              <div className="mt-1 text-sm text-gray-500">
+                <a
+                  href="https://platform.openai.com/api-keys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-indigo-600 hover:text-indigo-500"
+                >
+                  OpenAIのAPIキーをおもちでないかたはこちら
+                </a>
+              </div>
             </div>
           )}
 
