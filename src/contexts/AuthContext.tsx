@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/libs/supabaseClient';
 import { User, AuthError } from '@supabase/supabase-js';
-import * as CryptoJS from 'crypto-js';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
@@ -12,16 +11,9 @@ interface AuthContextType {
   signUp: (email: string, password: string, apiKey: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
-  updateApiKey: (apiKey: string) => Promise<{ error: AuthError | null }>;
-  getApiKey: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// 暗号化関数
-const encryptApiKey = (apiKey: string, secretKey: string) => {
-  return CryptoJS.AES.encrypt(apiKey, secretKey).toString();
-};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -93,44 +85,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     router.push('/login'); // サインアウト後はログイン画面へ
   };
 
-  const updateApiKey = async (apiKey: string): Promise<{ error: AuthError | null }> => {
-    try {
-      const { error } = await supabase.from('user_settings').upsert({
-        user_id: user?.id,
-        api_key: encryptApiKey(apiKey, process.env.NEXT_PUBLIC_API_KEY_SECRET!),
-      });
-
-      if (error) throw error;
-      return { error: null };
-    } catch (error) {
-      return { error: error as AuthError };
-    }
-  };
-
-  const getApiKey = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_settings')
-        .select('api_key')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (error) throw error;
-      return data?.api_key || null;
-    } catch (error) {
-      console.error('Error fetching API key:', error);
-      return null;
-    }
-  };
-
   const value = {
     user,
     loading,
     signUp,
     signIn,
     signOut,
-    updateApiKey,
-    getApiKey,
   };
 
   return (
