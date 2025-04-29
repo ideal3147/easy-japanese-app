@@ -12,7 +12,7 @@ const SettingsButton = () => {
         className="inline-flex items-center gap-2 space-x-2 text-indigo-400 hover:text-indigo-900 transition-colors"
       >
         <GoGear />
-        <span>せってい</span>
+        せってい
       </button>
 
       {isOpen && (
