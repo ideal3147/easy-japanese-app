@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { createClient } from '@supabase/supabase-js';
+import CryptoJS from 'crypto-js';
 
 export async function POST(request: Request) {
   try {
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     const openai = new OpenAI({
-      apiKey: data.api_key,
+      apiKey: decryptApiKey(data.api_key, process.env.NEXT_PUBLIC_API_KEY_SECRET!),
     });
 
     const prompt = `
@@ -88,3 +89,8 @@ export async function POST(request: Request) {
     );
   }
 } 
+
+const decryptApiKey = (ciphertext: string, secretKey: string) => {
+  const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};

@@ -1,6 +1,10 @@
+'use client';
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/libs/supabaseClient';
 import { User, AuthError } from '@supabase/supabase-js';
+import * as CryptoJS from 'crypto-js';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -13,6 +17,11 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// 暗号化関数
+const encryptApiKey = (apiKey: string, secretKey: string) => {
+  return CryptoJS.AES.encrypt(apiKey, secretKey).toString();
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -29,21 +38,42 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    // 初期ロード時にセッションを確認
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      const user = session?.user ?? null;
+      setUser(user);
       setLoading(false);
+
+      if (user) {
+        // user_settingsにAPIキーが未登録なら追加
+        const { data: existingData } = await supabase
+          .from('user_settings')
+          .select('api_key')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (!existingData) {
+          const pendingApiKey = localStorage.getItem('pendingApiKey');
+          if (pendingApiKey) {
+            await supabase.from('user_settings').insert([
+              {
+                user_id: user.id,
+                api_key: encryptApiKey(pendingApiKey, process.env.NEXT_PUBLIC_API_KEY_SECRET!),
+              },
+            ]);
+            localStorage.removeItem('pendingApiKey');
+          }
+        }
+      }
     };
 
     checkSession();
 
-    // 認証状態の変更を監視
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      setLoading(false);
     });
 
     return () => {
@@ -53,50 +83,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signUp = async (email: string, password: string, apiKey: string): Promise<{ error: AuthError | null }> => {
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login/callback`,
+          data: {
+            pendingApiKey: apiKey,
+          }
+        },
       });
 
-      if (signUpError) throw signUpError;
-
-      const { error: apiKeyError } = await supabase
-        .from('user_settings')
-        .insert([
-          { 
-            user_id: (await supabase.auth.getUser()).data.user?.id,
-            api_key: apiKey,
-          }
-        ]);
-
-      if (apiKeyError) throw apiKeyError;
+      if (error) throw error;
 
       return { error: null };
     } catch (error) {
+      localStorage.removeItem('pendingApiKey');
       return { error: error as AuthError };
     }
   };
 
   const signIn = async (email: string, password: string): Promise<{ error: AuthError | null }> => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setUser(null);
+    router.push('/login'); // サインアウト後はログイン画面へ
   };
 
   const updateApiKey = async (apiKey: string): Promise<{ error: AuthError | null }> => {
     try {
-      const { error } = await supabase
-        .from('user_settings')
-        .upsert({
-          user_id: user?.id,
-          api_key: apiKey,
-        });
+      const { error } = await supabase.from('user_settings').upsert({
+        user_id: user?.id,
+        api_key: encryptApiKey(apiKey, process.env.NEXT_PUBLIC_API_KEY_SECRET!),
+      });
 
       if (error) throw error;
       return { error: null };
@@ -136,4 +159,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {!loading && children}
     </AuthContext.Provider>
   );
-}; 
+};
