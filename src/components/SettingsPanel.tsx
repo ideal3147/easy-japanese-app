@@ -5,11 +5,11 @@ interface SettingsPanelProps {
 }
 
 const SettingsPanel = ({ onClose }: SettingsPanelProps) => {
-  const { 
-    japaneseLevel, 
+  const {
+    japaneseLevel,
     setJapaneseLevel,
     openAIModel,
-    setOpenAIModel
+    setOpenAIModel,
   } = useSettings();
 
   return (
