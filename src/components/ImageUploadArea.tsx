@@ -1,8 +1,9 @@
 import { useState, useRef } from 'react';
 import { createWorker } from 'tesseract.js';
-import { MdOutlineInsertPhoto  } from "react-icons/md";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import Image from 'next/image';
 import DeleteButton from './DeleteButton';
+import ImageCropModal from './ImageCropModal';
 
 interface ImageUploadAreaProps {
   onTextExtracted: (text: string) => void;
@@ -11,20 +12,29 @@ interface ImageUploadAreaProps {
 export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // プレビュー用のURLを生成
     const url = URL.createObjectURL(file);
-    setPreviewUrl(url);
+    setTempImageUrl(url);
+    setShowCropModal(true);
+  };
 
+  const handleCropComplete = async (croppedImageUrl: string) => {
+    setPreviewUrl(croppedImageUrl);
+    setShowCropModal(false);
     setIsProcessing(true);
+
     try {
+      const response = await fetch(croppedImageUrl);
+      const blob = await response.blob();
       const worker = await createWorker('jpn');
-      const { data: { text } } = await worker.recognize(file);
+      const { data: { text } } = await worker.recognize(blob);
       await worker.terminate();
       onTextExtracted(text);
     } catch (error) {
@@ -53,7 +63,7 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
             htmlFor="image-upload"
             className="flex flex-row items-center justify-center w-full h-12 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 px-4"
           >
-            <MdOutlineInsertPhoto  size={24} className="mr-2 text-gray-500" />
+            <MdOutlineAddPhotoAlternate size={24} className="mr-2 text-gray-500" />
             <p className="text-sm text-gray-500">
               <span className="font-semibold">がぞうをアップロード</span>
               <span className="ml-2 text-xs">(PNG, JPG, JPEG)</span>
@@ -63,7 +73,6 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
               type="file"
               className="hidden"
               accept="image/*"
-              capture="environment"
               onChange={handleImageUpload}
               ref={fileInputRef}
             />
@@ -89,6 +98,17 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
             height={100}
           />
         </div>
+      )}
+      {showCropModal && tempImageUrl && (
+        <ImageCropModal
+          imageUrl={tempImageUrl}
+          onCropComplete={handleCropComplete}
+          onClose={() => {
+            setShowCropModal(false);
+            URL.revokeObjectURL(tempImageUrl);
+            setTempImageUrl(null);
+          }}
+        />
       )}
     </div>
   );
