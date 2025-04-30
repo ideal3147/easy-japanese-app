@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import InputArea from "@/components/InputArea";
 import ConvertButton from "@/components/ConvertButton";
 import OutputArea from "@/components/OutputArea";
+import ImageUploadArea from "@/components/ImageUploadArea";
 import Footer from "@/components/Footer";
 import { convertToEasyJapanese } from "@/libs/openaiClient";
 import { SettingsProvider, useSettings } from "@/contexts/SettingsContext";
@@ -48,6 +49,10 @@ function HomeContent() {
     setIsLoading(false);
   };
 
+  const handleTextExtracted = (extractedText: string) => {
+    setText(extractedText);
+  };
+
   if (!user) {
     return null;
   }
@@ -57,10 +62,13 @@ function HomeContent() {
       <Header />
       <div className="w-full max-w-2xl space-y-6 mt-8">
         <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl">
+          <ImageUploadArea onTextExtracted={handleTextExtracted} />
+        </div>
+        <div className="bg-white rounded-xl shadow-lg p-6 transform transition-all hover:shadow-xl">
           <InputArea text={text} setText={setText} />
         </div>
         <div className="flex justify-center">
-          <ConvertButton onClick={handleConvert} />
+          <ConvertButton onClick={handleConvert} disabled={!text} />
         </div>
         {isLoading ? (
           <div className="mt-4 text-center text-lg text-indigo-600 animate-pulse">
