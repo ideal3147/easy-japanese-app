@@ -39,6 +39,9 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
       onTextExtracted('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
