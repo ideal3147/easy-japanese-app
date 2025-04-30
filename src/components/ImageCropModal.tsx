@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 import ReactCrop, { type Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { MdCheck, MdClose } from 'react-icons/md';
-import Image from 'next/image';
 
 interface ImageCropModalProps {
   imageUrl: string;
@@ -72,9 +71,7 @@ export default function ImageCropModal({ imageUrl, onCropComplete, onClose }: Im
             onComplete={handleCropComplete}
             aspect={undefined}
           >
-            <Image
-              width={800}
-              height={100}
+            <img
               ref={imgRef}
               src={imageUrl}
               alt="トリミング対象"
