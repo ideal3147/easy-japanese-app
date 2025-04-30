@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { createWorker } from 'tesseract.js';
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import { MdOutlineInsertPhoto  } from "react-icons/md";
 import Image from 'next/image';
 import DeleteButton from './DeleteButton';
 
@@ -53,7 +53,7 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
             htmlFor="image-upload"
             className="flex flex-row items-center justify-center w-full h-12 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 px-4"
           >
-            <MdOutlineAddPhotoAlternate size={24} className="mr-2 text-gray-500" />
+            <MdOutlineInsertPhoto  size={24} className="mr-2 text-gray-500" />
             <p className="text-sm text-gray-500">
               <span className="font-semibold">がぞうをアップロード</span>
               <span className="ml-2 text-xs">(PNG, JPG, JPEG)</span>
