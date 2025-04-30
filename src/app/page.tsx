@@ -68,7 +68,7 @@ function HomeContent() {
           <InputArea text={text} setText={setText} />
         </div>
         <div className="flex justify-center">
-          <ConvertButton onClick={handleConvert} />
+          <ConvertButton onClick={handleConvert} disabled={!text} />
         </div>
         {isLoading ? (
           <div className="mt-4 text-center text-lg text-indigo-600 animate-pulse">
