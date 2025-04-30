@@ -63,7 +63,6 @@ export default function ImageUploadArea({ onTextExtracted }: ImageUploadAreaProp
               type="file"
               className="hidden"
               accept="image/*"
-              capture="environment"
               onChange={handleImageUpload}
               ref={fileInputRef}
             />
